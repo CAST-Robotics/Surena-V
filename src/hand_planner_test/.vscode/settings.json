@@ -1,0 +1,8 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/surena/DynCont/SurenaVWalkTest/devel/lib/python3/dist-packages",
+        "/home/surena/devel/src/catkin_data_ws/devel/lib/python3/dist-packages",
+        "/opt/ros/noetic/lib/python3/dist-packages",
+        "/usr/local/lib/python2.7/site-packages"
+    ]
+}
