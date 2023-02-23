@@ -90,17 +90,17 @@ bool lefthand = false;
     VectorXd r_target_r(3);
 
     // set target values
-    r_middle_r<<0.2,-0.1,-0.35  ; //shakehands
-    r_target_r<<0.3,-0.05,-0.35;
-    R_target_r=hand_func.rot(2,-65*M_PI/180,3);
+    // r_middle_r<<0.2,-0.1,-0.35  ; //shakehands
+    // r_target_r<<0.3,-0.05,-0.35;
+    // R_target_r=hand_func.rot(2,-65*M_PI/180,3);
 
     // r_middle_r<<0.3,-0.1,-0.3  ; //respect
     // r_target_r<<0.25,0.1,-0.35;
     // R_target_r=hand_func.rot(2,-70*M_PI/180,3)*hand_func.rot(1,50*M_PI/180,3);
 
-    // r_middle_r<<0.35,-0.2,-0.15  ; //ByeBye
-    // r_target_r<<0.3,-0.1,0.25;
-    // R_target_r=hand_func.rot(2,-180*M_PI/180,3)*hand_func.rot(3,90*M_PI/180,3);
+    r_middle_r<<0.35,-0.2,-0.15  ; //ByeBye
+    r_target_r<<0.3,-0.1,0.25;
+    R_target_r=hand_func.rot(2,-180*M_PI/180,3)*hand_func.rot(3,90*M_PI/180,3);
 
     right_hand hand0_r(qr_cyc,r_target_r,R_target_r,0,0);
 
@@ -203,28 +203,31 @@ bool lefthand = false;
     }
     myfile.close();
     
-  
+  int encoderResolution[2] = {4096*4, 2048*4};
+  int harmonicRatio[4] = {100, 100, 100, 400};
 
-    while (ros::ok()){
-        if(id < M) {  
-             
-                    q_motor[12]=int((qref_deal(0,id)-qr_initial[0])*4096*4*100/M_PI/2); // int((qref_deal(0,id)-qr_initial[0])*4096*4*100/M_PI/2)be samte jelo
-                    q_motor[13]=-int((qref_deal(1,id)-qr_initial[1])*4096*4*100/M_PI/2); //-int((qref_deal(1,id)-qr_initial[1])*4096*4*100/M_PI/2);  // be samte birun
-                    q_motor[14]=int((qref_deal(2,id)-qr_initial[2])*2048*4*100/M_PI/2); // be samte birun
-                    q_motor[15]=-int((qref_deal(3,id)-qr_initial[3])*2048*4*4*100/M_PI/2);// be samte bala
-                    cout<<q_motor[12]<<','<<q_motor[13]<<','<<q_motor[14]<<','<<q_motor[15]<<endl;
-                    trajectory_data.data.clear();
-                    for(int  i = 0; i < 16; i++)
-                    {
-                        trajectory_data.data.push_back(q_motor[i]);
-                    }
-                    trajectory_data_pub.publish(trajectory_data);    
-                    ros::spinOnce();
-                    loop_rate.sleep(); 
 
-        };
-        id++;
-    };  
+while (ros::ok())
+{
+    if(id < M) {  
+            
+            q_motor[12]=int((qref_deal(0,id)-qr_initial[0])*encoderResolution[0]*harmonicRatio[0]/M_PI/2); // int((qref_deal(0,id)-qr_initial[0])*4096*4*100/M_PI/2)be samte jelo
+            q_motor[13]=-int((qref_deal(1,id)-qr_initial[1])*encoderResolution[0]*harmonicRatio[1]/M_PI/2); //-int((qref_deal(1,id)-qr_initial[1])*4096*4*100/M_PI/2);  // be samte birun
+            q_motor[14]=int((qref_deal(2,id)-qr_initial[2])*encoderResolution[1]*harmonicRatio[2]/M_PI/2); // be samte birun
+            q_motor[15]=-int((qref_deal(3,id)-qr_initial[3])*encoderResolution[1]*harmonicRatio[3]/M_PI/2);// be samte bala
+            cout<<q_motor[12]<<','<<q_motor[13]<<','<<q_motor[14]<<','<<q_motor[15]<<endl;
+            trajectory_data.data.clear();
+            for(int  i = 0; i < 16; i++)
+            {
+                trajectory_data.data.push_back(q_motor[i]);
+            }
+            trajectory_data_pub.publish(trajectory_data);    
+            ros::spinOnce();
+            loop_rate.sleep(); 
+
+    };
+    id++;
+};  
        
      return 0 ;
     }
