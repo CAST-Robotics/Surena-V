@@ -14,6 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -50,18 +51,20 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+ add_message_files(
+   FILES
+   DetectionInfo.msg
+   DetectionInfoArray.msg
+ )
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
+ add_service_files(
+   FILES
+   move_hand_single.srv
+   move_hand_both.srv
+   gripOnline.srv
+   home_service.srv
+ )
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -71,10 +74,10 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs
-# )
+ generate_messages(
+   DEPENDENCIES
+   std_msgs
+ )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -108,7 +111,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES hand_planner_test
-#  CATKIN_DEPENDS controller_manager joint_state_controller robot_state_publisher roscpp rospy std_msgs
+#  CATKIN_DEPENDS controller_manager joint_state_controller robot_state_publisher roscpp rospy std_msgs sensor_msgs
 #  DEPENDS system_lib
 )
 
@@ -140,18 +143,33 @@ include_directories(
 
 #add_executable(home_node_cpp src/surena5/BacktoHome.cpp)
 #target_link_libraries( home_node_cpp  ${catkin_LIBRARIES} )
-#add_executable(new src/surena5/new.cpp src/surena5/S5mod_right_hand.cpp src/surena5/MinimumJerkInterpolation.cpp)
-#target_link_libraries( new  ${catkin_LIBRARIES} )
-add_executable(test_node_cpp src/test_surena4_ros/target_robot_test_RH.cpp src/test_surena4_ros/S5mod_right_hand.cpp src/test_surena4_ros/MinimumJerkInterpolation.cpp)
-#add_executable(test_node_cpp src/test_surena4_ros/target_robot_test_LH.cpp src/test_surena4_ros/S5mod_left_hand.cpp src/test_surena4_ros/MinimumJerkInterpolation.cpp)
+#add_executable(test_node_cpp src/test_surena4_ros/target_robot_test_RH.cpp src/test_surena4_ros/S5mod_right_hand.cpp src/test_surena4_ros/MinimumJerkInterpolation.cpp)
+#add_executable(test_node_cpp src/test_surena4_ros/test_forgotten.cpp src/test_surena4_ros/S5mod_right_hand.cpp src/test_surena4_ros/S5mod_left_hand.cpp src/test_surena4_ros/MinimumJerkInterpolation.cpp)
 #add_executable(test_node_cpp src/surena5/target_robot_test_RH.cpp src/surena5/S5mod_right_hand.cpp src/surena5/MinimumJerkInterpolation.cpp)
-#add_executable(test_node_cpp src/surena5/target_robot_test_LH.cpp src/surena5/S5mod_left_hand.cpp src/surena5/MinimumJerkInterpolation.cpp)
+#add_executable(test_node_cpp src/sura5/target_robot_test_LH.cpp src/surena5/S5mod_left_hand.cpp src/surena5/MinimumJerkInterpolation.cpp)
 #add_executable(test_node_cpp src/surena5/target_robot_test.cpp src/surena5/S5mod_left_hand.cpp src/surena5/S5mod_right_hand.cpp src/surena5/MinimumJerkInterpolation.cpp)
 #add_executable(test_node_cpp src/surena5/move2pose_robot_test.cpp src/surena5/S5mod_right_hand.cpp)
-target_link_libraries( test_node_cpp  ${catkin_LIBRARIES} ) 
-
+#target_link_libraries( test_node_cpp  ${catkin_LIBRARIES} ) 
 
 #add_executable( test_node_cpp src/surena4/s5Version2_test_r.cpp src/surena4/S5mod_right_hand.cpp src/surena4/MinimumJerkInterpolation.cpp)
+
+#add_executable(hand_trajectory src/test_surena4_ros/test_forgotten_srv.cpp src/test_surena4_ros/S5mod_right_hand.cpp src/test_surena4_ros/S5mod_left_hand.cpp src/test_surena4_ros/MinimumJerkInterpolation.cpp)
+#target_link_libraries(hand_trajectory ${catkin_LIBRARIES})
+#add_dependencies(hand_trajectory hand_planner_test_gencpp)
+
+add_executable(hand_gripOnline src/test_surena4_ros/gripOnline.cpp src/test_surena4_ros/S5mod_right_hand.cpp src/test_surena4_ros/S5mod_left_hand.cpp src/test_surena4_ros/MinimumJerkInterpolation.cpp)
+target_link_libraries(hand_gripOnline ${catkin_LIBRARIES})
+add_dependencies(hand_gripOnline hand_planner_test_gencpp)
+
+#add_executable(CAMERA_AI src/test_surena4_ros/camera_ai_node.cpp)
+#target_link_libraries(CAMERA_AI ${catkin_LIBRARIES})
+#add_dependencies(CAMERA_AI hand_planner_test_gencpp)
+
+#add_executable(CAMERA_HEAD src/test_surena4_ros/camera_ai_head.cpp)
+#target_link_libraries(CAMERA_HEAD ${catkin_LIBRARIES})
+
+add_executable(head_sub src/test_surena4_ros/head_code.cpp)
+target_link_libraries(head_sub ${catkin_LIBRARIES})
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the

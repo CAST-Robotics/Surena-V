@@ -1,0 +1,10 @@
+string ee_ini_posR
+string[] scenarioR
+int64 scenR_count
+string ee_ini_posL
+string[] scenarioL
+int64 scenL_count
+int64 t_total
+---
+string ee_fnl_posR
+string ee_fnl_posL

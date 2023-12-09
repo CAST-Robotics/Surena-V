@@ -49,6 +49,13 @@ void Robot::Initialize()
     Initialized=true;
     _rosNode->RobotStatus="Ready";
     QLOG_TRACE()<<"initialize Completed...";
+//     for(int i=0;i<100;i++)
+//     {
+//         WaitMs(3000);
+//         Epos4.SetAllPositionCST(_motorPosition);
+//    QLOG_TRACE()<<"send Completed...";
+
+//     }
    
 }
 //=================================================================================================
