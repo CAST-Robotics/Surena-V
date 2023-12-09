@@ -51,3 +51,10 @@ qtcreator-*
 
 # Catkin custom files
 CATKIN_IGNORE
+
+
+.vscode
+*.out
+*.csv
+*.STL
+__pycache__
