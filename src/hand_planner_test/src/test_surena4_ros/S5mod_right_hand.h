@@ -153,20 +153,6 @@ public:
     // move_to_pose
     double move2pose(double max,double t_local,double T_start ,double T_end);
     void  SendGazebo(vector<double> q);
-
-    MatrixXd returnAngles(MatrixXd T_EEtobase);
-    MatrixXd ObjToNeck(VectorXd camera, double h_pitch, double h_roll, double h_yaw, double PtoR, double YtoP);
-    MatrixXd T0;
-    MatrixXd T1;
-    MatrixXd T2;
-    MatrixXd T3;
-    MatrixXd T4;
-    MatrixXd T_EEtobase;
-    double theta_pitch;
-    double sai_roll;
-    double phi_yaw;
-    MatrixXd output;
-
 };
 
 #endif // RIGHT_HAND_H

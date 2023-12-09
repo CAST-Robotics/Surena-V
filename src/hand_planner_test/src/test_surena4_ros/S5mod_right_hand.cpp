@@ -265,67 +265,7 @@ double right_hand::velocity(double d,double d0){ // coef calculation for velocit
     a2=-3/2*a3*d0;
     return v_target+a2*d*d+a3*d*d*d;
 }
-MatrixXd right_hand::ObjToNeck(VectorXd camera, double h_pitch, double h_roll, double h_yaw, double PtoR, double YtoP) {
-    T0.resize(4, 4);
-    T0 << cos(M_PI / 9), 0, sin(M_PI / 9), 0,
-        0, 1, 0, 0,
-        -sin(M_PI / 9), 0, cos(M_PI / 9), 0,
-        0, 0, 0, 1;
 
-    T1.resize(4, 4);
-    T1 << 1, 0, 0, camera(0),
-        0, 1, 0, camera(1),
-        0, 0, 1, camera(2),
-        0, 0, 0, 1;
-
-    T2.resize(4, 4);
-    T2 << 1, 0, 0, 0,
-        0, cos(h_roll), -sin(h_roll), 0,
-        0, sin(h_roll), cos(h_roll), PtoR,
-        0, 0, 0, 1;
-
-    T3.resize(4, 4);
-    T3 << cos(h_pitch), 0, sin(h_pitch), 0,
-        0, 1, 0, 0,
-        -sin(h_pitch), 0, cos(h_pitch), 0,
-        0, 0, 0, 1;
-
-    T4.resize(4, 4);
-    T4 << cos(h_yaw), -sin(h_yaw), 0, 0,
-        sin(h_yaw), cos(h_yaw), 0, 0,
-        0, 0, 1, YtoP,
-        0, 0, 0, 1;
-
-    T_EEtobase.resize(4, 4);
-    T_EEtobase = T4 * T3 * T2 * T1 * T0;
-    return T_EEtobase;
-}
-
-MatrixXd right_hand::returnAngles(MatrixXd T_EEtobase) {
-
-    output.resize(3,1);
-
-    if (T_EEtobase(2, 0) != 1 && T_EEtobase(2, 0) != -1)
-    {
-        theta_pitch = -asin(T_EEtobase(2, 0));
-        sai_roll = atan2(T_EEtobase(2, 1) / cos(theta_pitch), T_EEtobase(2, 2) / cos(theta_pitch));
-        phi_yaw = atan2(T_EEtobase(1, 0) / cos(theta_pitch), T_EEtobase(0, 0) / cos(theta_pitch));
-    }
-    else{
-            phi_yaw = 0;
-            if (T_EEtobase(2, 0) != -1)
-            {
-                theta_pitch = M_PI / 2;
-                sai_roll = atan2(T_EEtobase(0, 1), T_EEtobase(0, 2));
-            }
-            else{
-                theta_pitch = -M_PI / 2;
-                sai_roll = atan2(-T_EEtobase(0, 1), -T_EEtobase(0, 2));
-                }
-    }
-    output<< phi_yaw,sai_roll,theta_pitch;
-    return output;
-}
 void right_hand::HO_FK_right_palm(VectorXd q_ra){
     R1_fix_shd.resize(4,4);
     R2_fix_shd.resize(4,4);

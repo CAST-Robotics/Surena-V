@@ -1,7 +1,0 @@
-string mode
-string ee_ini_pos
-string[] scenario
-int64 scen_count
-int64 t_total
----
-string ee_fnl_pos

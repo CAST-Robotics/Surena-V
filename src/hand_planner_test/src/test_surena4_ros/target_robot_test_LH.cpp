@@ -71,13 +71,13 @@ bool lefthand = true;
     VectorXd q_la(7);
     q_la<<10*M_PI/180,10*M_PI/180,0,-25*M_PI/180,0,0,0; // initial condition
 
-    MatrixXd qref_l(7,M);
-    MatrixXd qref_l_deal(7,M);
+    MatrixXd qref(7,M);
+    MatrixXd qref_deal(7,M);
     VectorXd q_end(7,1);
     vector<double> q_motor(29,0);
     vector<double> q_gazebo(29,0);
-    VectorXd ql_initial(7);
-    ql_initial = q_la;
+    VectorXd qr_initial(7);
+    qr_initial = q_la;
 
     // define left_hand objs
     left_hand hand_func;
@@ -177,10 +177,10 @@ bool lefthand = true;
    }
      
     q_end=q_la;
-    qref_l.block(0,count,7,1)=q_end;
+    qref.block(0,count,7,1)=q_end;
 
     count++;
-    time_r=(count)*.T;
+    time_r=(count)*.005;
     // cout<<V_l(0)<<','<<V_l(1)<<','<<V_l(2)<<endl;
     };
 
@@ -190,39 +190,39 @@ bool lefthand = true;
     
     int k = 0;
     for (int i = 0; i < M; i++) {
-        // if(i==400){
-        //     continue;
-        // }
-        // else{
+        if(i==400){
+            continue;
+        }
+        else{
             for (int j = 0; j <7; j++){
-            qref_l_deal(j,k)=qref_l(j,i);
-            myfile << qref_l_deal(j,i) << ",";
+            qref_deal(j,k)=qref(j,i);
+            myfile << qref_deal(j,i) << ",";
             }
-        // }
+        }
         k++;
         myfile <<endl;
     }
     myfile.close();
 
     while (ros::ok()){
-        if(id < M) {  
+        if(id < M-1) {  
             // gazebo
             if (simulation) {
                 if(lefthand){
-                    q_gazebo[22]=qref_l_deal(0,id)-ql_initial[0];  
-                    q_gazebo[23]=qref_l_deal(1,id)-ql_initial[1];   
-                    q_gazebo[24]=qref_l_deal(2,id)-ql_initial[2];  
-                    q_gazebo[25]=qref_l_deal(3,id)-ql_initial[3];   
+                    q_gazebo[22]=qref_deal(0,id)-qr_initial[0];  
+                    q_gazebo[23]=qref_deal(1,id)-qr_initial[1];   
+                    q_gazebo[24]=qref_deal(2,id)-qr_initial[2];  
+                    q_gazebo[25]=qref_deal(3,id)-qr_initial[3];   
                     q_gazebo[26]=0;  
                     q_gazebo[27]=0;   
                     q_gazebo[28]=0;
                     hand_func.SendGazebo(q_gazebo); 
                     }
                 else{
-                    q_gazebo[15]=qref_l_deal(0,id)-ql_initial[0];  
-                    q_gazebo[16]=qref_l_deal(1,id)-ql_initial[1];   
-                    q_gazebo[17]=qref_l_deal(2,id)-ql_initial[2];  
-                    q_gazebo[18]=qref_l_deal(3,id)-ql_initial[3];   
+                    q_gazebo[15]=qref_deal(0,id)-qr_initial[0];  
+                    q_gazebo[16]=qref_deal(1,id)-qr_initial[1];   
+                    q_gazebo[17]=qref_deal(2,id)-qr_initial[2];  
+                    q_gazebo[18]=qref_deal(3,id)-qr_initial[3];   
                     q_gazebo[19]=0;  
                     q_gazebo[20]=0;   
                     q_gazebo[21]=0;
@@ -234,17 +234,17 @@ bool lefthand = true;
             else{
                     // ROS
                 if(lefthand){
-                    q_motor[16]=-int((qref_l_deal(0,id)-ql_initial[0])*4096*4*100/M_PI/2);
-                    q_motor[17]=int((qref_l_deal(1,id)-ql_initial[1])*4096*4*100/M_PI/2);
-                    q_motor[18]=-int((qref_l_deal(2,id)-ql_initial[2])*2048*4*100/M_PI/2);
-                    q_motor[19]=int((qref_l_deal(3,id)-ql_initial[3])*2048*4*4*100/M_PI/2);
+                    q_motor[16]=-int((qref_deal(0,id)-qr_initial[0])*4096*4*100/M_PI/2);
+                    q_motor[17]=int((qref_deal(1,id)-qr_initial[1])*4096*4*100/M_PI/2);
+                    q_motor[18]=-int((qref_deal(2,id)-qr_initial[2])*2048*4*100/M_PI/2);
+                    q_motor[19]=int((qref_deal(3,id)-qr_initial[3])*2048*4*4*100/M_PI/2);
                     cout<<q_motor[16]<<','<<q_motor[17]<<','<<q_motor[18]<<','<<q_motor[19]<<endl;
                 }
                 else{
-                    q_motor[12]=int((qref_l_deal(0,id)-ql_initial[0])*4096*4*100/M_PI/2); // be samte jelo
-                    q_motor[13]=-int((qref_l_deal(1,id)-ql_initial[1])*4096*4*100/M_PI/2);  // be samte birun
-                    q_motor[14]=int((qref_l_deal(2,id)-ql_initial[2])*2048*4*100/M_PI/2); // be samte birun
-                    q_motor[15]=-int((qref_l_deal(3,id)-ql_initial[3])*2048*4*4*100/M_PI/2);// be samte bala
+                    q_motor[12]=int((qref_deal(0,id)-qr_initial[0])*4096*4*100/M_PI/2); // be samte jelo
+                    q_motor[13]=-int((qref_deal(1,id)-qr_initial[1])*4096*4*100/M_PI/2);  // be samte birun
+                    q_motor[14]=int((qref_deal(2,id)-qr_initial[2])*2048*4*100/M_PI/2); // be samte birun
+                    q_motor[15]=-int((qref_deal(3,id)-qr_initial[3])*2048*4*4*100/M_PI/2);// be samte bala
                     // cout<<q_motor[12]<<','<<q_motor[13]<<','<<q_motor[14]<<','<<q_motor[15]<<endl;
                 }
                     trajectory_data.data.clear();

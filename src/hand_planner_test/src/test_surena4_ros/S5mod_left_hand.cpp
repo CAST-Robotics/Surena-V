@@ -631,10 +631,10 @@ g.fill(0.0);
 
 G=G+2*left_palm_position_power*J_left_palm.transpose()*J_left_palm;
 g=g-2* left_palm_position_power*J_left_palm.transpose()*V;
-if (dist<d_orient){
+// if (dist<d_orient){
 G=G+pow(tanh(5*(d_orient-dist)/d_orient),2)*left_palm_orientation_power*2*J_w_left_palm.transpose()*J_w_left_palm;
 g=g+pow(tanh(5*(d_orient-dist)/d_orient),2)*left_palm_orientation_power*(-2)*J_w_left_palm.transpose()*w_left_palm;
-}
+// }
 
 
 vector<double> minimum(7);

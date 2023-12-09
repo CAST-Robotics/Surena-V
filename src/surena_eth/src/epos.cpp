@@ -539,16 +539,16 @@ inline QByteArray Epos::CreateHandPacket(QList<int> motorPositions)
     }
     else if(handDeviceID> 3 && handDeviceID<7)
     {
-        // data.append(CreateDynamixelPacket(0x581,handDeviceID-3,motorPositions[12+handDeviceID],100));
-        // data.append(CreateDynamixelPacket(0x581,handDeviceID-3,motorPositions[8+12+handDeviceID],100));
+        data.append(CreateDynamixelPacket(0x581,handDeviceID-3,motorPositions[12+handDeviceID],100));
+        data.append(CreateDynamixelPacket(0x581,handDeviceID-3,motorPositions[8+12+handDeviceID],100));
         handDeviceID++;
     }
     else if(handDeviceID==7)
     {
         ///right palm
-        // data.append(CreatePDOPacket(palmCanID,motorPositions[19] &0xff,0));
-        // ///left palm
-        // data.append(CreatePDOPacket(palmCanID,motorPositions[27] &0xff,0));
+        data.append(CreatePDOPacket(palmCanID,motorPositions[19] &0xff,0));
+        ///left palm
+        data.append(CreatePDOPacket(palmCanID,motorPositions[27] &0xff,0));
         handDeviceID++;
     }
     else if(handDeviceID==8)//start move into controlworld for hands
@@ -572,19 +572,6 @@ inline QByteArray Epos::CreateBumpRequestCommand()
     return command;
 }
 //========================================================================
-inline QByteArray Epos::CreateServoHeadCommand(QList<int> motorPositions)
-{
-    QByteArray command;
-//   QLOG_TRACE()<<"motor:"<<motorPositions[20]<<" "<<motorPositions[21]<<" "<<motorPositions[22];
-    command.append(0x02);
-    command.append(0x81);
-    command.append(motorPositions[20]);
-    command.append(motorPositions[21]);
-    command.append(motorPositions[22]);
-    command.append( QByteArray(5, Qt::Initialization::Uninitialized));
-    return command;
-}
-//========================================================================
 inline QByteArray Epos::CreateWaistAndHeadCommand(QList<int> motorPositions)
 {
     static int state=0;
@@ -598,28 +585,28 @@ inline QByteArray Epos::CreateWaistAndHeadCommand(QList<int> motorPositions)
     }
     else if(state==1){
 
-    command.append(CreatePDOPacket(0x401,motorPositions.at(28),0x3f));//waist max
+   command.append(CreateDynamixelPacket(0x211,4,motorPositions.at(29),40));//waist dx
     }
     else if(state==2){
 
-       command.append(CreatePDOPacket(0x401,motorPositions.at(28),0x3f));//waist max
+      command.append(CreateDynamixelPacket(0x211,1,motorPositions.at(30),40));
     }
     else if(state==3){
 
-      command.append(CreatePDOPacket(0x401,motorPositions.at(28),0x3f));//waist max
+     command.append(CreateDynamixelPacket(0x211,2,motorPositions.at(31),40));
     }
     else if(state==4){
 
-       command.append(CreatePDOPacket(0x401,motorPositions.at(28),0x3f));//waist max
+        command.append(CreateDynamixelPacket(0x211,3,motorPositions.at(32),40));
     }
     else if(state==5){
 
-      command.append(CreatePDOPacket(0x401,motorPositions.at(28),0x3f));//waist max
+        command.append(CreateDynamixelPacket(0x211,5,motorPositions.at(33),40));
 
     }
     else if(state==6){
 
-      command.append(CreatePDOPacket(0x401,motorPositions.at(28),0x3f));//waist max
+      command.append(CreatePDOPacket(0x501,0x0f,0x0f));//move
 
     }
    // QLOG_TRACE()<<"state:"<<state<<" adad:"<<motorPositions.at(30);
@@ -635,7 +622,7 @@ void Epos::SetAllPositionCST(QList<int> motorPositions)
         command.append(MotorDataToArray(0x401,motorPositions.at(i)));
     command.append(CreateHandPacket(motorPositions));
     command.append(CreateWaistAndHeadCommand(motorPositions));
-    command.append(CreateServoHeadCommand(motorPositions));
+    command.append(CreateBumpRequestCommand());
     //    //packet must be 300 bytes 180 byte zero
     command.append(QByteArray(ReserveByteCount, Qt::Initialization::Uninitialized));
     can.WriteRunCommand(command);

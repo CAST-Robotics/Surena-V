@@ -174,7 +174,6 @@ class Epos : public QObject
     QByteArray CreatePDOPacket(int canID, int value1, int value2);
     QByteArray CreateDynamixelPacket(int canID, int motorID, int motorPosition, int velocity);
     QByteArray CreateBumpRequestCommand();
-     QByteArray CreateServoHeadCommand(QList<int> motorPositions);
     QByteArray CreateWaistAndHeadCommand(QList<int> motorPositions);
 
     bool IsValidRunPacket(QByteArray packet);

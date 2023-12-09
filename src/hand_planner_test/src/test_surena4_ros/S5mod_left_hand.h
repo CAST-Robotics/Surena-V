@@ -153,6 +153,7 @@ public:
     // move_to_pose
     double move2pose(double max,double t_local,double T_start ,double T_end);
     void  SendGazebo(vector<double> q);
+
 };
 
 #endif // LEFT_HAND_H

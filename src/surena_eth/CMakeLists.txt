@@ -10,7 +10,7 @@ project(surena_eth)
 ##############################################################################
 
 # qt_build provides the qt cmake glue, roscpp the comms for a default talker
-find_package(catkin REQUIRED COMPONENTS  roscpp sensor_msgs interactive_markers  visualization_msgs  tf   message_generation message_runtime robot_teleop)
+find_package(catkin REQUIRED COMPONENTS  roscpp sensor_msgs interactive_markers  visualization_msgs  tf   message_generation message_runtime)
 set(LIBUSB_1_LIBRARIES "/usr/lib/x86_64-linux-gnu/libusb-1.0.so")
 set(QSLOG_LIBRARIES  ${PROJECT_SOURCE_DIR}/src/QsLog/build-QsLogShared/libQsLog.so)
 include_directories(include ${catkin_INCLUDE_DIRS})

@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
   srand(time(0));
 
   //Sets the loop to publish at a rate of 10Hz
-  ros::Rate  rate(100);
+  ros::Rate  rate(200);
 
   std_msgs::Int32MultiArray msg;
   std_msgs::MultiArrayDimension msg_dim;
@@ -115,48 +115,46 @@ int main(int argc, char *argv[])
   msg.layout.dim.clear();
   msg.layout.dim.push_back(msg_dim);
 
-  // std::ifstream in("/home/surena/qref_deal.csv");
-  // if (in.fail()) return (std::cout << "File not found" << endl) && 0;
-  // std::string line;
+  std::ifstream in("/home/surena/qref_deal.csv");
+  if (in.fail()) return (std::cout << "File not found" << endl) && 0;
+  std::string line;
   
   int pos=0;
   bool dir=false;
   while(ros::ok()) 
   {
     std::vector<std::string> row;
-    // if(getline(in, line)  && in.good())
-    // {
-      // row = csv_read_row(line, ',');
+    if(getline(in, line)  && in.good())
+    {
+      row = csv_read_row(line, ',');
 
       msg.data.clear();
-      if(dir){
-            //_motorPosition[i]=pos;
-            pos+=16;
-            }
-          else{
-            //_motorPosition[i]=pos;
-            pos-=16;
-            }
       //_dataReader.GetData(_motorPosition,_dataIndex++);
-      for(size_t i = 0; i < 23; i++)
+      for(size_t i = 0; i < 16; i++)
       {
-        if(i == 16 || i == 17 || i == 18 || i == 19)
+        if(i == 12 || i == 13 || i == 14 || i == 15)
         {
-          msg.data.push_back(pos);
+          // if(dir){
+          //   //_motorPosition[i]=pos;
+          //   pos+=10;
+          //   }
+          // else{
+          //   //_motorPosition[i]=pos;
+          //   pos-=10;
+          //   }
+          msg.data.push_back(stoi(row[i - 12]));
+          cout << stoi(row[i - 12]) << "\t";
         }
         else{
           msg.data.push_back(0);
         }
       }
-    // }
+    }
     pub.publish(msg);
-     if(pos>(15000))
-    dir=false;
-     if(pos<(-15000))
-    dir=true;
-    
+    if(pos>(16384*3) || pos<(-16384*3)  )
+    dir=!dir;
    // pub2.publish(myCustomMsg);
-    // ROS_INFO("this is %d" ,_motorPosition[0]);
+    ROS_INFO("this is %d" ,_motorPosition[0]);
     //Delays untill it is time to send another message
     ros::spinOnce();// let system to receive callback from another nodes
     rate.sleep();
