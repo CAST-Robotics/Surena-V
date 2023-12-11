@@ -539,16 +539,16 @@ inline QByteArray Epos::CreateHandPacket(QList<int> motorPositions)
     }
     else if(handDeviceID> 3 && handDeviceID<7)
     {
-        // data.append(CreateDynamixelPacket(0x581,handDeviceID-3,motorPositions[12+handDeviceID],100));
-        // data.append(CreateDynamixelPacket(0x581,handDeviceID-3,motorPositions[8+12+handDeviceID],100));
+        data.append(CreateDynamixelPacket(0x581,handDeviceID-3,motorPositions[12+handDeviceID],100));
+        data.append(CreateDynamixelPacket(0x581,handDeviceID-3,motorPositions[8+12+handDeviceID],100));
         handDeviceID++;
     }
     else if(handDeviceID==7)
     {
         ///right palm
-        // data.append(CreatePDOPacket(palmCanID,motorPositions[19] &0xff,0));
+        data.append(CreatePDOPacket(palmCanID,motorPositions[19] &0xff,0));
         // ///left palm
-        // data.append(CreatePDOPacket(palmCanID,motorPositions[27] &0xff,0));
+        data.append(CreatePDOPacket(palmCanID,motorPositions[27] &0xff,0));
         handDeviceID++;
     }
     else if(handDeviceID==8)//start move into controlworld for hands
