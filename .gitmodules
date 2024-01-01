@@ -1,0 +1,3 @@
+[submodule "src/surena_control"]
+	path = src/surena_control
+	url = https://github.com/CAST-Robotics/surena_control.git
