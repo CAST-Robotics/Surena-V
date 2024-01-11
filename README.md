@@ -52,3 +52,5 @@ Whether you've encountered an issue using Surena-V or have amazing ideas for new
 
 1. **Fork the Project**: Take a copy of the Surena-V codebase and make it your own! This is the first step to contributing improvements and new features.
 2. **Pull Requests**: Once you've made some awesome changes, create a pull request.
+
+2024
