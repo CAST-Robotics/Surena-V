@@ -1,0 +1,32 @@
+<launch>
+
+  <!-- These are the arguments passed to this launch file, for example paused:=true -->
+  <arg name="paused" default="true"/>
+  <arg name="use_sim_time" default="true"/>
+  <arg name="gui" default="true"/>
+  <arg name="headless" default="false"/>
+  <arg name="debug" default="false"/>
+
+  <!-- LAUNCH GAZEBO  -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find surenaV_gazebo)/worlds/surenaV.world"/>
+    <arg name="debug" value="$(arg debug)" />
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+    <arg name="headless" value="$(arg headless)"/>
+  </include>
+
+  <!-- LOAD THE URDF TO THE PARAMETER SERVER -->
+  <param name="robot_description"
+    command="$(find xacro)/xacro '$(find surenaV_description)/urdf/surenaV.urdf'" />
+
+  <!-- SPAWN THE ROBOT IN GAZEBO -->
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+    args="-urdf -model surenaV -param robot_description"/>
+
+  <!-- LAUNCH THE CONTROLLERS AND THE BRIDGE NODE -->
+  <!-- This will load the controller configurations, spawn them, and start the bridge node -->
+  <include file="$(find surenaV_gazebo)/launch/surenaV_control.launch" />
+
+</launch>

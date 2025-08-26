@@ -85,6 +85,7 @@ bool QNode::Init() {
     _jointPublisher =    n.advertise<sensor_msgs::JointState>("surena/abs_joint_state", 1000);
     _incJointPublisher = n.advertise<sensor_msgs::JointState>("surena/inc_joint_state", 1000);
     _bumpPublisher = n.advertise<std_msgs::Int32MultiArray>("surena/bump_sensor_state", 1000);
+    _pressurePublisher = n.advertise<std_msgs::Float32MultiArray>("surena/pressure_sensor_state", 1000);
 
     QLOG_TRACE()<<"Initializing all ros services";
 
@@ -416,11 +417,17 @@ void QNode::run() {
    // std_msgs::String msg;
     sensor_msgs::JointState ActualJointState,IncJointState;
     std_msgs::Int32MultiArray BumpSensorState;
+    std_msgs::Float32MultiArray pressureSensorState;
     std_msgs::MultiArrayDimension msg_dim;
     msg_dim.label = "bump";
     msg_dim.size = 1;
     BumpSensorState.layout.dim.clear();
     BumpSensorState.layout.dim.push_back(msg_dim);
+
+    msg_dim.label = "pressure";
+    msg_dim.size = 1;
+    pressureSensorState.layout.dim.clear();
+    pressureSensorState.layout.dim.push_back(msg_dim);
 
     //chatter_publisher.publish(msg); // publish the value--of type Float64-
     ActualJointState.header.stamp = ros::Time::now();
@@ -436,10 +443,14 @@ void QNode::run() {
       BumpSensorState.data.push_back(BumpSensor[i]);
   //BumpSensorState.data[i]=i;
   }
+  for(int i=0 ;i<6;i++){
+      pressureSensorState.data.push_back(pressureData[i]);
+  }
 
     _rigthtFtPublisher.publish(RightFtSensorMessage);
     _leftFtPublisher.publish(LeftFtSensorMessage);
     _bumpPublisher.publish(BumpSensorState);
+    _pressurePublisher.publish(pressureSensorState);
     _imuPublisher.publish(imuSesnsorMsg);
     _jointPublisher.publish(ActualJointState);
     _incJointPublisher.publish(IncJointState);

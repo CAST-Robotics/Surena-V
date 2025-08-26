@@ -587,44 +587,53 @@ inline QByteArray Epos::CreateServoHeadCommand(QList<int> motorPositions)
 //========================================================================
 inline QByteArray Epos::CreateWaistAndHeadCommand(QList<int> motorPositions)
 {
-    static int state=0;
-
     QByteArray command;
-
-    if(state==0)
-    {
-
-        command.append(CreatePDOPacket(0x401,motorPositions.at(28),0x3f));//waist max
-    }
-    else if(state==1){
-
-    command.append(CreatePDOPacket(0x401,motorPositions.at(28),0x3f));//waist max
-    }
-    else if(state==2){
-
-       command.append(CreatePDOPacket(0x401,motorPositions.at(28),0x3f));//waist max
-    }
-    else if(state==3){
-
-      command.append(CreatePDOPacket(0x401,motorPositions.at(28),0x3f));//waist max
-    }
-    else if(state==4){
-
-       command.append(CreatePDOPacket(0x401,motorPositions.at(28),0x3f));//waist max
-    }
-    else if(state==5){
-
-      command.append(CreatePDOPacket(0x401,motorPositions.at(28),0x3f));//waist max
-
-    }
-    else if(state==6){
-
-      command.append(CreatePDOPacket(0x401,motorPositions.at(28),0x3f));//waist max
-
-    }
-   // QLOG_TRACE()<<"state:"<<state<<" adad:"<<motorPositions.at(30);
-    if(state++>5)state=0;
+//   QLOG_TRACE()<<"motor:"<<motorPositions[20]<<" "<<motorPositions[21]<<" "<<motorPositions[22];
+    command.append(0x02);
+    command.append(0x81);
+    command.append(motorPositions[23]);
+    command.append(motorPositions[24]);
+    command.append(motorPositions[25]);
+    command.append( QByteArray(5, Qt::Initialization::Uninitialized));
     return command;
+//     static int state=0;
+
+//     QByteArray command;
+
+//     if(state==0)
+//     {
+
+//         command.append(CreatePDOPacket(0x401,motorPositions.at(28),0x3f));//waist max
+//     }
+//     else if(state==1){
+
+//     command.append(CreatePDOPacket(0x401,motorPositions.at(28),0x3f));//waist max
+//     }
+//     else if(state==2){
+
+//        command.append(CreatePDOPacket(0x401,motorPositions.at(28),0x3f));//waist max
+//     }
+//     else if(state==3){
+
+//       command.append(CreatePDOPacket(0x401,motorPositions.at(28),0x3f));//waist max
+//     }
+//     else if(state==4){
+
+//        command.append(CreatePDOPacket(0x401,motorPositions.at(28),0x3f));//waist max
+//     }
+//     else if(state==5){
+
+//       command.append(CreatePDOPacket(0x401,motorPositions.at(28),0x3f));//waist max
+
+//     }
+//     else if(state==6){
+
+//       command.append(CreatePDOPacket(0x401,motorPositions.at(28),0x3f));//waist max
+
+//     }
+//    // QLOG_TRACE()<<"state:"<<state<<" adad:"<<motorPositions.at(30);
+//     if(state++>5)state=0;
+//     return command;
 }
 //========================================================================
 void Epos::SetAllPositionCST(QList<int> motorPositions)
@@ -794,6 +803,37 @@ inline void Epos::GetBumpDataFromPacket(BumpSensorPacket *packet)
   
 
 }
+
+void ExtractFloatFromBuffer(const uint8_t* buffer, float* a, float* b) {
+    // Assuming each floating-point number is 4 bytes long (single precision)
+    uint32_t a_uint, b_uint;
+
+    // Copy the binary representation of 'a' and 'b' from the buffer
+    memcpy(&a_uint, buffer, sizeof(float));
+    memcpy(&b_uint, buffer + sizeof(float), sizeof(float));
+
+    // Convert the binary representation back to floating-point numbers
+    *a = *((float*)&a_uint);
+    *b = *((float*)&b_uint);
+}
+
+void Epos::GetPressureDataFromPacket(EthernetReceivedPacketType*packet)
+{
+    float a,b;
+    int id = packet->MotorData[14].ID - 0x180;
+    if (id > 2)
+        return;
+
+    ExtractFloatFromBuffer((uint8_t*)&packet->MotorData[14].Valu1, &a, &b);
+    pressureData[2 * id] = a;
+    pressureData[2 * id + 1] = b;
+//     qDebug()<< id;
+//     for(int i=0; i < 6; i++)
+//         qDebug()<<pressureData[i] << ", " << i;
+//    qDebug()<<"<-------------------->";
+
+}
+
 //========================================================================
 void Epos::GetPositionDataFromPacket(EthernetReceivedPacketType*packet)
 {
@@ -815,10 +855,11 @@ void Epos::DataReceived(QByteArray data)
     QByteArray mid= data.mid(276,8);
     bumpPacket=(BumpSensorPacket*)mid.data();
     GetPositionDataFromPacket(incommingPacket);
+    GetPressureDataFromPacket(incommingPacket);
     GetBumpDataFromPacket(bumpPacket);
     GetFTSensorDataFromPacket(incommingPacket);
     GetIMUDataFromPacket(incommingPacket);
-    emit FeedBackReceived(ft,positions,positionsInc,bump_sensor_list, imu_data_list);
+    emit FeedBackReceived(ft,positions,positionsInc,bump_sensor_list, imu_data_list, pressureData);
 }
 //========================================================================
 void Epos::WaitMs(int ms)

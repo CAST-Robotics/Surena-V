@@ -1,0 +1,50 @@
+<launch>
+
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <rosparam file="$(find surenaV_gazebo)/config/surenaV_control.yaml" command="load"/>
+
+  <!-- Load the controllers -->
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+    output="screen" ns="/surenaV" args="
+      joint_state_controller
+      head_yaw_joint_position_controller
+      head_pitch_joint_position_controller
+      head_roll_joint_position_controller
+      r_hip_yaw_joint_position_controller
+      r_hip_roll_joint_position_controller
+      r_hip_pitch_joint_position_controller
+      r_knee_joint_position_controller
+      r_ankle_pitch_joint_position_controller
+      r_ankle_roll_joint_position_controller
+      l_hip_yaw_joint_position_controller
+      l_hip_roll_joint_position_controller
+      l_hip_pitch_joint_position_controller
+      l_knee_joint_position_controller
+      l_ankle_pitch_joint_position_controller
+      l_ankle_roll_joint_position_controller
+      r_arm_pitch_joint_position_controller
+      r_arm_roll_joint_position_controller
+      r_elbow_pitch_joint_position_controller
+      r_forearm_roll_joint_position_controller
+      r_forearm_link_joint_position_controller
+      r_hand_pitch_joint_position_controller
+      r_hand_roll_joint_position_controller
+      l_arm_pitch_joint_position_controller
+      l_arm_roll_joint_position_controller
+      l_elbow_pitch_joint_position_controller
+      l_forearm_roll_joint_position_controller
+      l_forearm_link_joint_position_controller
+      l_hand_pitch_joint_position_controller
+      l_hand_roll_joint_position_controller
+    "/>
+
+  <!-- Convert joint states to TF transforms for rviz, etc -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+    respawn="false" output="screen">
+    <remap from="/joint_states" to="/surenaV/joint_states" />
+  </node>
+  
+  <!-- Launch the Gazebo bridge node to translate your topics to controller commands -->
+  <node name="gazebo_bridge_node" pkg="surenaV_gazebo" type="gazebo_bridge_node" output="screen" />
+
+</launch>

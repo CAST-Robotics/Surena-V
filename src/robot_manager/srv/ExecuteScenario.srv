@@ -1,0 +1,6 @@
+# Request
+string scenario_name
+---
+# Response
+bool success
+string message

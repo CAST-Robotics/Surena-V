@@ -1,0 +1,40 @@
+<?xml version="1.0" ?>
+<sdf version="1.4">
+  <!-- We use a custom world for the rrbot so that the camera angle is launched correctly -->
+
+  <world name="default">
+  
+    <physics type="ode">
+      <gravity>0 0 -9.81</gravity>
+      <simbody>
+        <accuracy>0.005</accuracy>
+        <max_transient_velocity>0.005</max_transient_velocity>
+        <contact>
+          <stiffness>1e8</stiffness>
+          <dissipation>20.0</dissipation>
+        </contact>
+      </simbody>
+      <ode>
+        <constraints>
+          <cfm>0.0</cfm>
+          <erp>0.2</erp>
+          <contact_max_correcting_vel>100.0</contact_max_correcting_vel>
+          <contact_surface_layer>0.0</contact_surface_layer>
+        </constraints>
+      </ode>
+      <real_time_update_rate>1000</real_time_update_rate>
+      <max_step_size>0.001</max_step_size>
+    </physics>
+    
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+
+    <!-- Global light source -->
+    <include>
+      <uri>model://sun</uri>
+    </include>
+
+
+  </world>
+</sdf>

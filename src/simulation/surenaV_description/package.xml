@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>surenaV_description</name>
+  <version>0.0.0</version>
+  <description>The surenaV_description package</description>
+
+  <maintainer email="parsa@todo.todo">parsa</maintainer>
+
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <export>
+  </export>
+  
+</package>

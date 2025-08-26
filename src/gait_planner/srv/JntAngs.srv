@@ -1,0 +1,12 @@
+int32 iter
+float64[3] left_ft
+float64[3] right_ft
+float64[12] config
+float64[12] jnt_vel
+float64[3] accelerometer
+float64[3] gyro
+int32[4] right_bump
+int32[4] left_bump
+---
+float32[12] jnt_angs
+int8 status

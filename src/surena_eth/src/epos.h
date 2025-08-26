@@ -157,6 +157,7 @@ class Epos : public QObject
     QList<uint16_t> bump_sensor_list;
     QList<int32_t> positions;
     QList<int32_t> positionsInc;
+    float pressureData[6];
     QList<int16_t> ft;
     QList<float> imu_data_list;
 
@@ -182,6 +183,7 @@ class Epos : public QObject
     void GetIMUDataFromPacket(EthernetReceivedPacketType *packet);
     void GetBumpDataFromPacket(BumpSensorPacket *packet);
     void GetPositionDataFromPacket(EthernetReceivedPacketType *packet);
+    void GetPressureDataFromPacket(EthernetReceivedPacketType*packet);
 public:
     sensor_msgs::Imu IMU;
     sensor_msgs::MagneticField MagneticSensor;
@@ -279,7 +281,7 @@ signals:
     void Dummy();
     //================================================================================================================================================================
 
-    void  FeedBackReceived(QList<int16_t> ft, QList<int32_t> positions,QList<int32_t> positionsInc,QList<uint16_t> bump_sensor_list,QList<float> imu_data_list);
+    void  FeedBackReceived(QList<int16_t> ft, QList<int32_t> positions,QList<int32_t> positionsInc,QList<uint16_t> bump_sensor_list,QList<float> imu_data_list, float* pressureData);
     //================================================================================================================================================================
 
 
